@@ -1,0 +1,1122 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no" ?>
+<gdml xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://service-spi.web.cern.ch/service-spi/app/releases/GDML/schema/gdml.xsd">
+
+  <define/>
+
+  <materials>
+    <isotope N="204" Z="82" name="Pb204">
+      <atom unit="g/mole" value="203.973"/>
+    </isotope>
+    <isotope N="206" Z="82" name="Pb206">
+      <atom unit="g/mole" value="205.974"/>
+    </isotope>
+    <isotope N="207" Z="82" name="Pb207">
+      <atom unit="g/mole" value="206.976"/>
+    </isotope>
+    <isotope N="208" Z="82" name="Pb208">
+      <atom unit="g/mole" value="207.977"/>
+    </isotope>
+    <element name="Pb">
+      <fraction n="0.014" ref="Pb204"/>
+      <fraction n="0.241" ref="Pb206"/>
+      <fraction n="0.221" ref="Pb207"/>
+      <fraction n="0.524" ref="Pb208"/>
+    </element>
+    <material name="Pb" state="solid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="823"/>
+      <D unit="g/cm3" value="11.35"/>
+      <fraction n="1" ref="Pb"/>
+    </material>
+    <isotope N="36" Z="18" name="Ar36">
+      <atom unit="g/mole" value="35.9675"/>
+    </isotope>
+    <isotope N="38" Z="18" name="Ar38">
+      <atom unit="g/mole" value="37.9627"/>
+    </isotope>
+    <isotope N="40" Z="18" name="Ar40">
+      <atom unit="g/mole" value="39.9624"/>
+    </isotope>
+    <element name="Ar">
+      <fraction n="0.003365" ref="Ar36"/>
+      <fraction n="0.000632" ref="Ar38"/>
+      <fraction n="0.996003" ref="Ar40"/>
+    </element>
+    <material name="lAr" state="liquid">
+      <T unit="K" value="293.15"/>
+      <MEE unit="eV" value="188"/>
+      <D unit="g/cm3" value="1.396"/>
+      <fraction n="1" ref="Ar"/>
+    </material>
+    <isotope N="1" Z="1" name="H1">
+      <atom unit="g/mole" value="1.00782503081372"/>
+    </isotope>
+    <isotope N="2" Z="1" name="H2">
+      <atom unit="g/mole" value="2.01410199966617"/>
+    </isotope>
+    <element name="H">
+      <fraction n="0.999885" ref="H1"/>
+      <fraction n="0.000115" ref="H2"/>
+    </element>
+    <material name="vacuum" state="gas">
+      <T unit="K" value="2.73"/>
+      <P unit="pascal" value="3e-18"/>
+      <MEE unit="eV" value="21.8"/>
+      <D unit="g/cm3" value="1e-25"/>
+      <fraction n="1" ref="H"/>
+    </material>
+  </materials>
+
+  <solids>
+    <box lunit="mm" name="gap_shape" x="2.3" y="400" z="400"/>
+    <box lunit="mm" name="absorber_shape" x="5.7" y="400" z="400"/>
+    <box lunit="mm" name="layer_shape" x="8" y="400" z="400"/>
+    <box lunit="mm" name="calorimeter_shape" x="400" y="400" z="400"/>
+    <box lunit="mm" name="world_shape" x="480" y="480" z="480"/>
+  </solids>
+
+  <structure>
+    <volume name="gap_lv">
+      <materialref ref="Pb"/>
+      <solidref ref="gap_shape"/>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.101843"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="1.36749"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="1.27862"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+      <auxiliary auxtype="SensDet" auxvalue="gap_sd"/>
+    </volume>
+    <volume name="absorber_lv">
+      <materialref ref="lAr"/>
+      <solidref ref="absorber_shape"/>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00619986"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.349521"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.337972"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+      <auxiliary auxtype="SensDet" auxvalue="absorber_sd"/>
+    </volume>
+    <volume name="Layer_lv_0">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol name="gap_0">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_0_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol name="absorber_0">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_0_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_1">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="1" name="gap_1">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_1_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="1" name="absorber_1">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_1_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_2">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="2" name="gap_2">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_2_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="2" name="absorber_2">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_2_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_3">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="3" name="gap_3">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_3_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="3" name="absorber_3">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_3_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_4">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="4" name="gap_4">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_4_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="4" name="absorber_4">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_4_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_5">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="5" name="gap_5">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_5_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="5" name="absorber_5">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_5_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_6">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="6" name="gap_6">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_6_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="6" name="absorber_6">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_6_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_7">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="7" name="gap_7">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_7_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="7" name="absorber_7">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_7_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_8">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="8" name="gap_8">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_8_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="8" name="absorber_8">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_8_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_9">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="9" name="gap_9">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_9_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="9" name="absorber_9">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_9_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_10">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="10" name="gap_10">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_10_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="10" name="absorber_10">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_10_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_11">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="11" name="gap_11">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_11_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="11" name="absorber_11">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_11_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_12">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="12" name="gap_12">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_12_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="12" name="absorber_12">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_12_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_13">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="13" name="gap_13">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_13_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="13" name="absorber_13">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_13_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_14">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="14" name="gap_14">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_14_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="14" name="absorber_14">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_14_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_15">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="15" name="gap_15">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_15_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="15" name="absorber_15">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_15_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_16">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="16" name="gap_16">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_16_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="16" name="absorber_16">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_16_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_17">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="17" name="gap_17">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_17_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="17" name="absorber_17">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_17_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_18">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="18" name="gap_18">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_18_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="18" name="absorber_18">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_18_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_19">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="19" name="gap_19">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_19_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="19" name="absorber_19">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_19_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_20">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="20" name="gap_20">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_20_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="20" name="absorber_20">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_20_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_21">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="21" name="gap_21">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_21_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="21" name="absorber_21">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_21_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_22">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="22" name="gap_22">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_22_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="22" name="absorber_22">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_22_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_23">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="23" name="gap_23">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_23_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="23" name="absorber_23">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_23_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_24">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="24" name="gap_24">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_24_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="24" name="absorber_24">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_24_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_25">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="25" name="gap_25">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_25_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="25" name="absorber_25">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_25_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_26">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="26" name="gap_26">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_26_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="26" name="absorber_26">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_26_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_27">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="27" name="gap_27">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_27_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="27" name="absorber_27">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_27_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_28">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="28" name="gap_28">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_28_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="28" name="absorber_28">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_28_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_29">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="29" name="gap_29">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_29_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="29" name="absorber_29">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_29_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_30">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="30" name="gap_30">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_30_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="30" name="absorber_30">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_30_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_31">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="31" name="gap_31">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_31_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="31" name="absorber_31">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_31_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_32">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="32" name="gap_32">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_32_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="32" name="absorber_32">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_32_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_33">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="33" name="gap_33">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_33_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="33" name="absorber_33">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_33_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_34">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="34" name="gap_34">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_34_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="34" name="absorber_34">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_34_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_35">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="35" name="gap_35">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_35_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="35" name="absorber_35">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_35_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_36">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="36" name="gap_36">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_36_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="36" name="absorber_36">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_36_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_37">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="37" name="gap_37">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_37_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="37" name="absorber_37">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_37_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_38">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="38" name="gap_38">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_38_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="38" name="absorber_38">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_38_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_39">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="39" name="gap_39">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_39_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="39" name="absorber_39">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_39_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_40">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="40" name="gap_40">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_40_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="40" name="absorber_40">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_40_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_41">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="41" name="gap_41">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_41_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="41" name="absorber_41">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_41_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_42">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="42" name="gap_42">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_42_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="42" name="absorber_42">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_42_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_43">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="43" name="gap_43">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_43_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="43" name="absorber_43">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_43_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_44">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="44" name="gap_44">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_44_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="44" name="absorber_44">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_44_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_45">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="45" name="gap_45">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_45_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="45" name="absorber_45">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_45_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_46">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="46" name="gap_46">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_46_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="46" name="absorber_46">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_46_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_47">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="47" name="gap_47">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_47_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="47" name="absorber_47">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_47_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_48">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="48" name="gap_48">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_48_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="48" name="absorber_48">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_48_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="Layer_lv_49">
+      <materialref ref="vacuum"/>
+      <solidref ref="layer_shape"/>
+      <physvol copynumber="49" name="gap_49">
+        <volumeref ref="gap_lv"/>
+        <position name="gap_49_pos" unit="mm" x="-2.85" y="0" z="0"/>
+      </physvol>
+      <physvol copynumber="49" name="absorber_49">
+        <volumeref ref="absorber_lv"/>
+        <position name="absorber_49_pos" unit="mm" x="1.15" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="calorimeter_lv">
+      <materialref ref="vacuum"/>
+      <solidref ref="calorimeter_shape"/>
+      <physvol name="layer_0">
+        <volumeref ref="Layer_lv_0"/>
+        <position name="layer_0_pos" unit="mm" x="-196" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_1">
+        <volumeref ref="Layer_lv_1"/>
+        <position name="layer_1_pos" unit="mm" x="-188" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_2">
+        <volumeref ref="Layer_lv_2"/>
+        <position name="layer_2_pos" unit="mm" x="-180" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_3">
+        <volumeref ref="Layer_lv_3"/>
+        <position name="layer_3_pos" unit="mm" x="-172" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_4">
+        <volumeref ref="Layer_lv_4"/>
+        <position name="layer_4_pos" unit="mm" x="-164" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_5">
+        <volumeref ref="Layer_lv_5"/>
+        <position name="layer_5_pos" unit="mm" x="-156" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_6">
+        <volumeref ref="Layer_lv_6"/>
+        <position name="layer_6_pos" unit="mm" x="-148" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_7">
+        <volumeref ref="Layer_lv_7"/>
+        <position name="layer_7_pos" unit="mm" x="-140" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_8">
+        <volumeref ref="Layer_lv_8"/>
+        <position name="layer_8_pos" unit="mm" x="-132" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_9">
+        <volumeref ref="Layer_lv_9"/>
+        <position name="layer_9_pos" unit="mm" x="-124" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_10">
+        <volumeref ref="Layer_lv_10"/>
+        <position name="layer_10_pos" unit="mm" x="-116" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_11">
+        <volumeref ref="Layer_lv_11"/>
+        <position name="layer_11_pos" unit="mm" x="-108" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_12">
+        <volumeref ref="Layer_lv_12"/>
+        <position name="layer_12_pos" unit="mm" x="-100" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_13">
+        <volumeref ref="Layer_lv_13"/>
+        <position name="layer_13_pos" unit="mm" x="-92" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_14">
+        <volumeref ref="Layer_lv_14"/>
+        <position name="layer_14_pos" unit="mm" x="-84" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_15">
+        <volumeref ref="Layer_lv_15"/>
+        <position name="layer_15_pos" unit="mm" x="-76" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_16">
+        <volumeref ref="Layer_lv_16"/>
+        <position name="layer_16_pos" unit="mm" x="-68" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_17">
+        <volumeref ref="Layer_lv_17"/>
+        <position name="layer_17_pos" unit="mm" x="-60" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_18">
+        <volumeref ref="Layer_lv_18"/>
+        <position name="layer_18_pos" unit="mm" x="-52" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_19">
+        <volumeref ref="Layer_lv_19"/>
+        <position name="layer_19_pos" unit="mm" x="-44" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_20">
+        <volumeref ref="Layer_lv_20"/>
+        <position name="layer_20_pos" unit="mm" x="-36" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_21">
+        <volumeref ref="Layer_lv_21"/>
+        <position name="layer_21_pos" unit="mm" x="-28" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_22">
+        <volumeref ref="Layer_lv_22"/>
+        <position name="layer_22_pos" unit="mm" x="-20" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_23">
+        <volumeref ref="Layer_lv_23"/>
+        <position name="layer_23_pos" unit="mm" x="-12" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_24">
+        <volumeref ref="Layer_lv_24"/>
+        <position name="layer_24_pos" unit="mm" x="-4" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_25">
+        <volumeref ref="Layer_lv_25"/>
+        <position name="layer_25_pos" unit="mm" x="4" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_26">
+        <volumeref ref="Layer_lv_26"/>
+        <position name="layer_26_pos" unit="mm" x="12" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_27">
+        <volumeref ref="Layer_lv_27"/>
+        <position name="layer_27_pos" unit="mm" x="20" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_28">
+        <volumeref ref="Layer_lv_28"/>
+        <position name="layer_28_pos" unit="mm" x="28" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_29">
+        <volumeref ref="Layer_lv_29"/>
+        <position name="layer_29_pos" unit="mm" x="36" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_30">
+        <volumeref ref="Layer_lv_30"/>
+        <position name="layer_30_pos" unit="mm" x="44" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_31">
+        <volumeref ref="Layer_lv_31"/>
+        <position name="layer_31_pos" unit="mm" x="52" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_32">
+        <volumeref ref="Layer_lv_32"/>
+        <position name="layer_32_pos" unit="mm" x="60" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_33">
+        <volumeref ref="Layer_lv_33"/>
+        <position name="layer_33_pos" unit="mm" x="68" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_34">
+        <volumeref ref="Layer_lv_34"/>
+        <position name="layer_34_pos" unit="mm" x="76" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_35">
+        <volumeref ref="Layer_lv_35"/>
+        <position name="layer_35_pos" unit="mm" x="84" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_36">
+        <volumeref ref="Layer_lv_36"/>
+        <position name="layer_36_pos" unit="mm" x="92" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_37">
+        <volumeref ref="Layer_lv_37"/>
+        <position name="layer_37_pos" unit="mm" x="100" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_38">
+        <volumeref ref="Layer_lv_38"/>
+        <position name="layer_38_pos" unit="mm" x="108" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_39">
+        <volumeref ref="Layer_lv_39"/>
+        <position name="layer_39_pos" unit="mm" x="116" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_40">
+        <volumeref ref="Layer_lv_40"/>
+        <position name="layer_40_pos" unit="mm" x="124" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_41">
+        <volumeref ref="Layer_lv_41"/>
+        <position name="layer_41_pos" unit="mm" x="132" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_42">
+        <volumeref ref="Layer_lv_42"/>
+        <position name="layer_42_pos" unit="mm" x="140" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_43">
+        <volumeref ref="Layer_lv_43"/>
+        <position name="layer_43_pos" unit="mm" x="148" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_44">
+        <volumeref ref="Layer_lv_44"/>
+        <position name="layer_44_pos" unit="mm" x="156" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_45">
+        <volumeref ref="Layer_lv_45"/>
+        <position name="layer_45_pos" unit="mm" x="164" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_46">
+        <volumeref ref="Layer_lv_46"/>
+        <position name="layer_46_pos" unit="mm" x="172" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_47">
+        <volumeref ref="Layer_lv_47"/>
+        <position name="layer_47_pos" unit="mm" x="180" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_48">
+        <volumeref ref="Layer_lv_48"/>
+        <position name="layer_48_pos" unit="mm" x="188" y="0" z="0"/>
+      </physvol>
+      <physvol name="layer_49">
+        <volumeref ref="Layer_lv_49"/>
+        <position name="layer_49_pos" unit="mm" x="196" y="0" z="0"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+    <volume name="world_lv">
+      <materialref ref="vacuum"/>
+      <solidref ref="world_shape"/>
+      <physvol name="calorimeter">
+        <volumeref ref="calorimeter_lv"/>
+      </physvol>
+      <auxiliary auxtype="gammaECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="electronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="positronECut" auxunit="MeV" auxvalue="0.00099"/>
+      <auxiliary auxtype="protonECut" auxunit="MeV" auxvalue="0.1"/>
+    </volume>
+  </structure>
+
+  <setup name="Default" version="1.0">
+    <world ref="world_lv"/>
+  </setup>
+
+</gdml>
