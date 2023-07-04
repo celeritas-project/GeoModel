@@ -48,7 +48,4 @@ add_subdirectory(Examples/EventGeneratorPlugins/FSLExamplePrimaryGeneratorPlugin
 add_subdirectory(Examples/SensitiveDetectorPlugins/SDPlugin)
 add_subdirectory(Examples/MagneticFieldPlugins/UniformMagneticFieldPlugin)
 
-
-
-
-
+add_subdirectory(GPUPlugins)
