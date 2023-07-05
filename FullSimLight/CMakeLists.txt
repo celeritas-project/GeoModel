@@ -60,6 +60,12 @@ if(GEOMODEL_USE_PYTHIA)
   find_package(Pythia REQUIRED) # if support for Pythia is enabled, it must be installed.
 endif()
 
+# Support for Celeritas
+# NB: a dummy find as it's only used in Plugins/GPUPlugins, but CMake/FSL project
+# structure will fail generation with an error about no compile features for
+# the CUDA compiler, which is unknown. TODO: understand/resolve this
+find_package(Celeritas 0.3 QUIET)
+
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
