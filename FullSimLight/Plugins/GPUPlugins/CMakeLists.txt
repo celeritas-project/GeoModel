@@ -9,7 +9,7 @@ if(CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
   # Make the root module directory visible to CMake.
   list( APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/../../../cmake )
   # get global GeoModel version
-  include( GeoModel-version ) 
+  include( GeoModel-version )
   # set the project, with the version taken from the GeoModel parent project
   # Later find of Celeritas/AdePT will enable CUDA if it's needed
   project( GPUPlugins VERSION ${GeoModel_VERSION} LANGUAGES CXX )
@@ -44,16 +44,15 @@ find_package(Geant4 REQUIRED)
 # Important note: the library name must match that used in the plugin creator function
 # i.e. if we have "libFooBar.so", then there must be a "createFooBar" `extern "C"` function
 # to return a new-d instance of the plugin.
-add_library(CelerUserActionPlugin MODULE 
+add_library(CelerUserActionPlugin SHARED
   src/Celeritas.hh
   src/Celeritas.cc
   src/CelerUserActionPlugin.cc)
-target_link_libraries(CelerUserActionPlugin PRIVATE FullSimLight::FullSimLight)
 
 include(CeleritasLibrary)
-celeritas_target_link_libraries(CelerUserActionPlugin PRIVATE Celeritas::accel)
+celeritas_target_link_libraries(CelerUserActionPlugin PRIVATE Celeritas::accel FullSimLight::FullSimLight ${Geant4_LIBRARIES})
 
-# Configure the FSL Json file 
+# Configure the FSL Json file
 configure_file(celer-testem3.fsl.json celer-testem3.fsl.json @ONLY)
 
 # TODO: Add installation commands
