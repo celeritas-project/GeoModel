@@ -5,6 +5,7 @@
 #include <accel/AlongStepFactory.hh>
 #include <accel/LocalTransporter.hh>
 #include <accel/SetupOptions.hh>
+#include <accel/SetupOptionsMessenger.hh>
 #include <accel/SharedParams.hh>
 #include <celeritas/field/UniformFieldData.hh>
 #include <celeritas/io/ImportData.hh>
@@ -42,13 +43,13 @@ SetupOptions& CelerSetupOptions()
         // Using the pre-step point, reconstruct the G4 touchable handle.
         so.sd.locate_touchable = true;
 
-        // Save diagnostic information
-        so.output_file = "celer-user-action-plugin.diag.json";
-
         // Pre-step time is used
         so.sd.pre.global_time = true;
         return so;
     }();
+
+    static auto mess = std::make_unique<SetupOptionsMessenger>(&options);
+
     return options;
 }
 

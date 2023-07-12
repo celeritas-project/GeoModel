@@ -44,7 +44,7 @@ find_package(Geant4 REQUIRED)
 # Important note: the library name must match that used in the plugin creator function
 # i.e. if we have "libFooBar.so", then there must be a "createFooBar" `extern "C"` function
 # to return a new-d instance of the plugin.
-add_library(CelerUserActionPlugin SHARED
+add_library(CelerUserActionPlugin MODULE
   src/Celeritas.hh
   src/Celeritas.cc
   src/CelerUserActionPlugin.cc)
