@@ -20,6 +20,7 @@
         "/process/had/verbose 0",
         "/control/cout/prefixString G4Worker_",
         "/run/numberOfThreads 4",
+        "/celer/outputFile celer-testem3.diag.json",
         "/FSLdet/setField 0.0 tesla",
         "/FSLgun/primaryPerEvt 1",
         "/FSLgun/energy 18.000000 GeV",
