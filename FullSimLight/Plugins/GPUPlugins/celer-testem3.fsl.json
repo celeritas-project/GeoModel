@@ -19,7 +19,7 @@
         "/process/em/verbose 0",
         "/process/had/verbose 0",
         "/control/cout/prefixString G4Worker_",
-        "/run/numberOfThreads 8",
+        "/run/numberOfThreads 4",
         "/FSLdet/setField 0.0 tesla",
         "/FSLgun/primaryPerEvt 1",
         "/FSLgun/energy 18.000000 GeV",
