@@ -1,7 +1,7 @@
 {
     "Generator": "Particle Gun",
     "Generator Plugin": "",
-    "Geometry": "@PROJECT_SOURCE_DIR@/testem3.gdml",
+    "Geometry": "@PROJECT_SOURCE_DIR@/MinCeleritas/testem3.gdml",
     "HepMC3 file": "",
     "HepMC3 type of file": "",
     "Magnetic Field Plugin": "",
@@ -13,7 +13,7 @@
     "Regions data": [],
     "Sensitive Detector Extensions": [],
     "User Action Extensions": [
-        "@PROJECT_BINARY_DIR@/libCelerUserActionPlugin.so"
+        "@PROJECT_BINARY_DIR@/MinCeleritas/libMinCeleritasUserActionPlugin.so"
     ],
     "g4ui_commands": [
         "/process/em/verbose 0",

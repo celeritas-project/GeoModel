@@ -1,0 +1,28 @@
+{
+    "Generator": "Generator Plugin",
+    "Generator Plugin": "@PROJECT_BINARY_DIR@/ATLTileCalTB/libATLTileCalTBUserActionPlugin.so",
+    "Geometry": "@PROJECT_SOURCE_DIR@/ATLTileCalTB/TileTB_2B1EB_nobeamline.gdml",
+    "HepMC3 file": "",
+    "HepMC3 type of file": "",
+    "Magnetic Field Plugin": "",
+    "Magnetic Field Type": "Fixed Axial",
+    "Number of events": 1,
+    "Physics list name": "FTFP_BERT",
+    "Pythia event input file": "",
+    "Pythia type of event": "",
+    "Regions data": [],
+    "Sensitive Detector Extensions": [
+        "@PROJECT_BINARY_DIR@/ATLTileCalTB/libATLTileCalTBSDPlugin.so"
+    ],
+    "User Action Extensions": [
+        "@PROJECT_BINARY_DIR@/ATLTileCalTB/libATLTileCalTBUserActionPlugin.so"
+    ],
+    "g4ui_commands": [
+        "/process/em/verbose 0",
+        "/process/had/verbose 0",
+        "/control/cout/prefixString G4Worker_",
+        "/FSLdet/setField 0.0 tesla",
+        "/gun/particle pi+",
+        "/gun/energy 18 GeV"
+    ]
+}

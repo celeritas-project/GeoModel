@@ -1,38 +1,39 @@
 //---------------------------------------------------------------------------//
-//! \file CelerUserActionPlugin.hh
+//! \file MinCeleritasUserActionPlugin.cc
 //! \brief FullSimLight UserActionPlugin to enable minimal Celeritas offload
 //---------------------------------------------------------------------------//
 
 #include <FullSimLight/FSLUserActionPlugin.h>
 #include <G4Threading.hh>
 
-#include "CelerEventAction.hh"
-#include "CelerRunAction.hh"
-#include "CelerTrackingAction.hh"
-#include "Celeritas.hh"
+#include "MinCeleritas/EventAction.hh"
+#include "MinCeleritas/RunAction.hh"
+#include "MinCeleritas/TrackingAction.hh"
+#include "MinCeleritas/Celeritas.hh"
 
+namespace MinCeleritas {
 //---------------------------------------------------------------------------//
 /*!
  * Concrete FSLUserActionPlugin for constructing user actions for Celeritas offload
  */
-class CelerUserActionPlugin final : public FSLUserActionPlugin
+class UserActionPlugin final : public FSLUserActionPlugin
 {
   public:
-    CelerUserActionPlugin();
+    UserActionPlugin();
 
     G4UserEventAction* getEventAction() const override
     {
-        return new CelerEventAction;
+        return new EventAction;
     }
 
     G4UserRunAction* getRunAction() const override
     {
-        return new CelerRunAction;
+        return new RunAction;
     }
 
     G4UserTrackingAction* getTrackingAction() const override
     {
-        return new CelerTrackingAction;
+        return new TrackingAction;
     }
 };
 
@@ -46,7 +47,7 @@ class CelerUserActionPlugin final : public FSLUserActionPlugin
  * is however constructed in each of these functions, so the constructor is used to
  * call these functions at the appropriate time/thread (but it is a slight hack)
  */
-CelerUserActionPlugin::CelerUserActionPlugin()
+UserActionPlugin::UserActionPlugin()
 {
     if (G4Threading::IsMasterThread())
     {
@@ -60,16 +61,17 @@ CelerUserActionPlugin::CelerUserActionPlugin()
                                    &CelerLocalTransporter());
     }
 }
+}
 
 //---------------------------------------------------------------------------//
 /*!
- * Factory function that returns a new instance of `CelerUserActionPlugin`
+ * Factory function that returns a new instance of `MinCeleritas::UserActionPlugin`
  *
  * Required by FullSimLight to make and use our plugin. Its name *must* be
  * `createNAMEOFLIBRARY`, where `NAMEOFLIBRARY` is the name of the library
  * in which the plugin is compiled, i.e `libNAMEOFLIBRARY.so`.
  */
-extern "C" FSLUserActionPlugin* createCelerUserActionPlugin()
+extern "C" FSLUserActionPlugin* createMinCeleritasUserActionPlugin()
 {
-    return new CelerUserActionPlugin;
+    return new MinCeleritas::UserActionPlugin;
 }

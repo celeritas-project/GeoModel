@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------//
-//! \file CelerEventAction.hh
+//! \file MinCeleritas::EventAction.hh
 //! \brief Minimal Geant4 EventAction for interfacing to Celeritas SimpleOffload 
 //---------------------------------------------------------------------------//
 #pragma once
@@ -8,7 +8,8 @@
 
 #include "Celeritas.hh"
 
-class CelerEventAction : public G4UserEventAction
+namespace MinCeleritas {
+class EventAction : public G4UserEventAction
 {
   public:
     void BeginOfEventAction(G4Event const* event)
@@ -21,3 +22,4 @@ class CelerEventAction : public G4UserEventAction
         CelerSimpleOffload().EndOfEventAction(event);
     }
 };
+}

@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------//
-//! \file CelerRunAction.hh
+//! \file MinCeleritas/RunAction.hh
 //! \brief Minimal Geant4 RunAction for interfacing to Celeritas SimpleOffload 
 //---------------------------------------------------------------------------//
 #pragma once
@@ -8,7 +8,8 @@
 
 #include "Celeritas.hh"
 
-class CelerRunAction : public G4UserRunAction
+namespace MinCeleritas {
+class RunAction : public G4UserRunAction
 {
   public:
     void BeginOfRunAction(G4Run const* run)
@@ -21,3 +22,4 @@ class CelerRunAction : public G4UserRunAction
         CelerSimpleOffload().EndOfRunAction(run);
     }
 };
+}
