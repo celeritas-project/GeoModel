@@ -1,11 +1,7 @@
 # Copyright (C) 2023 CERN for the benefit of the ATLAS collaboration
 
 add_library(ATLTileCalTB SHARED
-  #ATLTileCalTB/ATLTileCalTBActInitialization.cc
-  #ATLTileCalTB/ATLTileCalTBActInitialization.hh
   ATLTileCalTB/ATLTileCalTBConstants.hh
-  #ATLTileCalTB/ATLTileCalTBDetConstruction.cc
-  #ATLTileCalTB/ATLTileCalTBDetConstruction.hh
   ATLTileCalTB/ATLTileCalTBEventAction.cc
   ATLTileCalTB/ATLTileCalTBEventAction.hh
   ATLTileCalTB/ATLTileCalTBGeometry.cc

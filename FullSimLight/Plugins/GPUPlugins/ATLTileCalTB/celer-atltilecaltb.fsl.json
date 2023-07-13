@@ -6,7 +6,7 @@
     "HepMC3 type of file": "",
     "Magnetic Field Plugin": "",
     "Magnetic Field Type": "Fixed Axial",
-    "Number of events": 10,
+    "Number of events": 1,
     "Physics list name": "FTFP_BERT",
     "Pythia event input file": "",
     "Pythia type of event": "",
@@ -21,8 +21,8 @@
         "/process/em/verbose 0",
         "/process/had/verbose 0",
         "/control/cout/prefixString G4Worker_",
-        "/run/numberOfThreads 1",
-        "/random/resetEngineFrom G4Master_currentRun.rndm",
-        "/FSLdet/setField 0.0 tesla"
+        "/FSLdet/setField 0.0 tesla",
+        "/gun/particle pi+",
+        "/gun/energy 18 GeV"
     ]
 }

@@ -25,39 +25,42 @@ class ATLTileCalTBUserActionPlugin final : public FSLUserActionPlugin
 
     G4UserEventAction* getEventAction() const override
     {
-        // Event action needs primary generator action
+        // Event action needs primary generator action, so ensure only one instance per thread
         static thread_local auto* evtAct_ = new ATLTileCalTBEventAction{dynamic_cast<ATLTileCalTBPrimaryGenAction*>(this->getPrimaryGeneratorAction())};
         return evtAct_;
     }
 
     G4UserRunAction* getRunAction() const override
     {
-        // Unique runaction on master
+        // Unique instance on master due to null primary generator action here
         if (G4Threading::IsMasterThread())
         {
             return new ATLTileCalTBRunAction{
                 new ATLTileCalTBEventAction{nullptr}};
         }
 
-        // Otherwise needs Event Action, but nothing else needs it, so no need for thread_local
+        // Otherwise connect up to current thread's event action
+        // Not thread_local because not other action needs worker Run Action.
         return new ATLTileCalTBRunAction{dynamic_cast<ATLTileCalTBEventAction*>(this->getEventAction())};
     }
 
     G4UserSteppingAction* getSteppingAction() const override
     {
-        // Stepping action needs Event Action
+        // Stepping action needs this thread's Event Action
+        // Not thread_local because not other action needs worker Stepping Action.
         return new ATLTileCalTBStepAction{dynamic_cast<ATLTileCalTBEventAction*>(this->getEventAction())};
     }
 
     G4UserTrackingAction* getTrackingAction() const override
     {
-        // Tracking Action is free
+        // Tracking Action is not used by any other action, so we can just return a fresh instance
         return new ATLTileCalTBTrackingAction;
     }
 
     G4VUserPrimaryGeneratorAction* getPrimaryGeneratorAction() const override
     {
-      // Primary Generator Action has no dependencies
+        // Primary Generator Action has no dependencies, but must be thread_local so
+        // Event Action can connect up to this thread's instance
         static thread_local auto* primGenAct_ = new ATLTileCalTBPrimaryGenAction;
         return primGenAct_;
     }
@@ -74,8 +77,6 @@ class ATLTileCalTBUserActionPlugin final : public FSLUserActionPlugin
  * functions, so the constructor is used to call these functions at the
  * appropriate time/thread (but it is a slight hack)
  *
- * In addition, because ATLTileCalTB's components need to know about each
- * other, we store thread_local pointers here
  */
 ATLTileCalTBUserActionPlugin::ATLTileCalTBUserActionPlugin()
 {
