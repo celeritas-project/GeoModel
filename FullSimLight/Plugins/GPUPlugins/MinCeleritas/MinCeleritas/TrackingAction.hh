@@ -1,5 +1,5 @@
 //---------------------------------------------------------------------------//
-//! \file CelerTrackingAction.hh
+//! \file TrackingAction.hh
 //! \brief Minimal Geant4 TrackingAction for interfacing to Celeritas SimpleOffload 
 //---------------------------------------------------------------------------//
 #pragma once
@@ -8,7 +8,9 @@
 
 #include "Celeritas.hh"
 
-class CelerTrackingAction : public G4UserTrackingAction
+namespace MinCeleritas {
+
+class TrackingAction : public G4UserTrackingAction
 {
   public:
     void PreUserTrackingAction(G4Track const* track)
@@ -16,3 +18,4 @@ class CelerTrackingAction : public G4UserTrackingAction
         CelerSimpleOffload().PreUserTrackingAction(const_cast<G4Track*>(track));
     }
 };
+}
