@@ -58,4 +58,7 @@ target_link_libraries(CelerUserActionPlugin Celeritas::accel $<TARGET_NAME_IF_EX
 # Configure the FSL Json file
 configure_file(celer-testem3.fsl.json celer-testem3.fsl.json @ONLY)
 
+# Separate for now TileCal Plugins
+add_subdirectory(ATLTileCalTB)
+
 # TODO: Add installation commands
