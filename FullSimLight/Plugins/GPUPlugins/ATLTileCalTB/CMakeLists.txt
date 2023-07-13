@@ -27,14 +27,12 @@ add_library(ATLTileCalTB SHARED
 target_link_libraries(ATLTileCalTB PUBLIC Celeritas::accel $<TARGET_NAME_IF_EXISTS:Celeritas::accel_final> ${Geant4_LIBRARIES})
 target_include_directories(ATLTileCalTB PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>)
 
-
 # Plugins
 add_library(ATLTileCalTBUserActionPlugin MODULE ATLTileCalTBUserActionPlugin.cc)
 target_link_libraries(ATLTileCalTBUserActionPlugin PRIVATE ATLTileCalTB FullSimLight::FullSimLight)
 
 add_library(ATLTileCalTBSDPlugin MODULE ATLTileCalTBSDPlugin.cc)
 target_link_libraries(ATLTileCalTBSDPlugin PRIVATE ATLTileCalTB FullSimLight::FullSimLight)
-
 
 # Configure the FSL Json file
 configure_file(celer-atltilecaltb.fsl.json celer-atltilecaltb.fsl.json @ONLY)
