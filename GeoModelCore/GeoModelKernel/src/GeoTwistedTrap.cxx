@@ -90,9 +90,8 @@ GeoTwistedTrap::~GeoTwistedTrap()
 
 double GeoTwistedTrap::volume () const
 {
-  //not really
-  double cubicVolume = 2 * m_dz * ( ( m_dx1 + m_dx2 ) * m_dy1 + ( m_dx3 + m_dx4 ) * m_dy2  );
-  return cubicVolume;
+  return m_dz * ((m_dx1 + m_dx2 + m_dx3 + m_dx4) * (m_dy1 + m_dy2) +
+                 (m_dx4 + m_dx3 - m_dx2 - m_dx1) * (m_dy2 - m_dy1) * (1./3.));
 }
 
 const std::string & GeoTwistedTrap::type () const

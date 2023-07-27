@@ -10,6 +10,18 @@ If, after starting `gmex`, you get a window that tells you that was not possible
 * try to restart your machine. Seriously! :-) Sometimes, after updates to the graphical packages (those can happen behind the scene, without you to notice them), the system needs to be restarted. I experienced that personally: `gmex` was failing to start, when I was trying a new version of our 3D engine, Coin3D, and I was trying to find for the cause in the code of Coin3D itself... But then my OpenGL-accelerated terminal emulator, Alacritty, had stopped working as well; and that gave me a hint that something global was happening... So, I Googled, and I found a suggestion to resart the machine to get the graphics drivers sync between each others. Try that first, it can help! ;-)
 * your OpenGL installation / support is not correct / fully-installed. In that case, you should look for instructions to install proper OpenGL support on your system.
 
+### GMEX crashes on the latest Ubuntu
+
+The GeoModelExplorer (GMEX) application appears to crash when run on the latest version of the Ubuntu "Wayland" window manager.
+
+The problem is that the SoQt/Coin third-party packages we use in GMEX have not been ported to work to the latest Wayland yet. As far as we know, all applications that use the Coin/SoQt graphics layers as their graphics interface crash on the latest Wayland. 
+
+The Coin3D community is aware of the problem but there are no fixes, yet.
+
+Therefore, we strongly suggest to use the alternative X11 window manager when running GEMX (or all other SoQt/Coin3D-based applications) on Ubuntu, for the time being.
+
+
+
 ## Packages
 
 ### macOS / Homebrew

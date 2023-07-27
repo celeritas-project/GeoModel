@@ -22,16 +22,9 @@ m_phi (Phi)
 GeoPara::~GeoPara()
 {}
 
-  double GeoPara::volume () const
+double GeoPara::volume () const
 {
-  //## begin GeoPara::volume%3CD2A6DB00FC.body preserve=yes
-  GeoTrf::Vector3D
-    v0 (1, 0, 0),
-    v1 (sin (m_alpha), cos (m_alpha), 0),
-    v2 (sin (m_theta) * cos (m_phi), sin (m_theta) * sin (m_phi), cos (m_theta));
-  double factor = (v0.cross (v1).dot (v2));
-
-  return 8.0 * factor * m_xHalfLength * m_yHalfLength * m_zHalfLength;
+  return 8.0 * m_xHalfLength * m_yHalfLength * m_zHalfLength;
 }
 
 const std::string & GeoPara::type () const

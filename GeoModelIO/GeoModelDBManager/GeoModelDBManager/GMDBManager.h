@@ -189,8 +189,16 @@ class GMDBManager {
 
     void printAllDBTables();
 
+    /// Get tables and tables' columns from the input DB, if any,
+    /// and populate the cache that stores them
     void createTableDataCaches();
+
+    /// Get all tables from the input DB, if any,
+    /// and populate the cache that stores them
     void getAllDBTables();
+
+    /// Get tables' columns from the input DB, if any,
+    /// and populate the cache that stores them
     void getAllDBTableColumns();
 
     int execQuery(std::string queryStr);
@@ -247,12 +255,12 @@ class GMDBManager {
     /// methods to dump the DB
     std::vector<std::vector<std::string>> getChildrenTable();
 
-    //Table names for Aux tables are of the form prefix_suffix
-    //where prefix depends on the type of data in the table
-    //and suffix depends on the plugin/publisher that provided it
+    // Table names for Aux tables are of the form prefix_suffix
+    // where prefix depends on the type of data in the table
+    // and suffix depends on the plugin/publisher that provided it
 
-    //These two require only the suffix, the prefix is already specified based on the 
-    //table type being accessed
+    // These two require only the suffix, the prefix is already specified based
+    // on the table type being accessed
     std::vector<std::vector<std::string>> getPublishedFPVTable(
         std::string suffix = "");
     std::vector<std::vector<std::string>> getPublishedAXFTable(
@@ -264,10 +272,11 @@ class GMDBManager {
     std::unordered_map<unsigned int, std::string> getAll_TableIDsNodeTypes();
     std::unordered_map<std::string, unsigned int> getAll_NodeTypesTableIDs();
 
-    std::vector<std::vector<std::string>> getTableRecords(std::string tableName) const;  // TODO: should be private?
+    std::vector<std::vector<std::string>> getTableRecords(
+        std::string tableName) const;  // TODO: should be private?
 
-    //Test if a given table exists
-    //This requires the *full* table name (i.e. prefix_suffix)
+    // Test if a given table exists
+    // This requires the *full* table name (i.e. prefix_suffix)
     bool checkTable(std::string tableName) const;
 
     /**
@@ -347,12 +356,14 @@ class GMDBManager {
     // verbosity level
     int m_verbose;
 
-    std::unordered_map<std::string, std::vector<std::string>>
-        m_tableNames;  /// stores the column names for each table
+    /// stores the column names for each table
+    std::unordered_map<std::string, std::vector<std::string>> m_tableNames;
+
     std::unordered_map<std::string, std::string> m_childType_tableName;
 
-    std::vector<std::string>
-        m_cache_tables;  /// cache for the list of tables in the DB
+    /// cache for the list of tables in the DB
+    std::vector<std::string> m_cache_tables;
+
     std::unordered_map<unsigned int, std::string>
         m_cache_tableId_tableName;  /// cache for tableID-->tableName
     std::unordered_map<unsigned int, std::string>

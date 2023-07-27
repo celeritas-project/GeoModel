@@ -165,41 +165,43 @@
 #define DEFAULT_NUMBER_OF_STEPS 24
 #endif
 
-class GeoFacet
-{
-  friend class GeoPolyhedron;
-  friend std::ostream & operator<< (std::ostream &, const GeoFacet & facet);
-
-private:
-  struct
-  {
-    int v, f;
-  }
-  m_edge[4];
-
-public:
-    GeoFacet (int v1 = 0, int f1 = 0, int v2 = 0, int f2 = 0,
-	      int v3 = 0, int f3 = 0, int v4 = 0, int f4 = 0)
-  {
-    m_edge[0].v = v1;
-    m_edge[0].f = f1;
-    m_edge[1].v = v2;
-    m_edge[1].f = f2;
-    m_edge[2].v = v3;
-    m_edge[2].f = f3;
-    m_edge[3].v = v4;
-    m_edge[3].f = f4;
-  }
-};
-
 class GeoPolyhedron
 {
+  friend class Geo_BooleanProcessor;
   friend std::ostream & operator<< (std::ostream &, const GeoPolyhedron & ph);
 
 private:
   static int s_fNumberOfRotationSteps;
 
 protected:
+  class GeoFacet
+  {
+    friend class GeoPolyhedron;
+    friend std::ostream & operator<< (std::ostream &, const GeoFacet & facet);
+
+  private:
+    struct
+    {
+      int v, f;
+    }
+    m_edge[4];
+
+  public:
+      GeoFacet (int v1 = 0, int f1 = 0, int v2 = 0, int f2 = 0,
+     	        int v3 = 0, int f3 = 0, int v4 = 0, int f4 = 0)
+    {
+      m_edge[0].v = v1;
+      m_edge[0].f = f1;
+      m_edge[1].v = v2;
+      m_edge[1].f = f2;
+      m_edge[2].v = v3;
+      m_edge[2].f = f3;
+      m_edge[3].v = v4;
+      m_edge[3].f = f4;
+    }
+  };
+  friend std::ostream & operator<< (std::ostream &, const GeoPolyhedron::GeoFacet & facet);
+
   int m_nvert, m_nface;
   GeoTrf::Vector3D *m_pV;
   GeoFacet *m_pF;

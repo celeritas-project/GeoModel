@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2002-2022 CERN for the benefit of the ATLAS collaboration
+  Copyright (C) 2002-2023 CERN for the benefit of the ATLAS collaboration
 */
 
 /*
@@ -8,9 +8,12 @@
  *  - Aug 2018, R.M.Bianchi
  *  - Jun 2020, R.M.Bianchi
  *  - Aug 2020, R.M.Bianchi - Added support to publish lists of FullPhysVol and
- * AlignableTransform nodes
+ *                            AlignableTransform nodes
  * - Jun 2022 - Riccardo Maria Bianchi, <riccardo.maria.bianchi@cern.ch>,
  *              Added support for "Verbose" output
+ * - Jul 2023 - Riccardo Maria Bianchi, <riccardo.maria.bianchi@cern.ch>,
+ *              Populate the caches in the constructor, so all print methods are
+ *              available as soon as the input file is opened by the GMDBManager
  */
 
 #include <GeoModelDBManager/GMDBManager.h>
@@ -99,7 +102,9 @@ GMDBManager::GMDBManager(const std::string& path)
     m_dbIsOK = false;
 
     // FIXME: TODO: we should check the existence of the file, otherwise SQLite
-    // will create a new file from scratch Save the connection result
+    // will create a new file from scratch
+
+    // Save the connection result
     int exit = sqlite3_open(path.c_str(), &m_d->m_dbSqlite);
 
     // Test if there was an error
@@ -121,16 +126,12 @@ GMDBManager::GMDBManager(const std::string& path)
         m_verbose = std::stoi(env_p);
     }
 
-    //  if (m_dbIsOK) {
-    //    if ( ! (initDB()) ) {
-    //      std::cout << "Error: database initialization failed" << std::endl;
-    //      m_dbIsOK = false;
-    //    }
-    //  }
-
-    // populate DB with fake data, only for debug
-    // loadTestData(); // TODO: we should move initDB() here, only for debug and
-    // Write
+    /// get info from the input DB, if populated,
+    /// and create caches storing those pieces of information
+    /// This call is only useful when reading an existing DB file.
+    /// If the file is new (that is, when we use GMDBManager to write a piece of
+    /// geometry into a new file, the call below does nothing.
+    createTableDataCaches();
 }
 
 GMDBManager::~GMDBManager() {
@@ -207,7 +208,7 @@ void GMDBManager::createTableDataCaches() {
 
 void GMDBManager::printAllRecords(const std::string& tableName) const {
     // --- print table name
-    std::cout << "\n---" << std::endl;
+    std::cout << "---" << std::endl;
     std::cout << "'" << tableName << "' in db:" << std::endl;
     // --- check if we stored table's data
     if (m_tableNames.find(tableName) == m_tableNames.end()) {
@@ -232,16 +233,16 @@ void GMDBManager::printAllRecords(const std::string& tableName) const {
         }
     }
     std::cout << "---" << std::endl;
-    // TODO: I want to have a symbol like '---' to mean empty line when query
-    // gives 0 results.
+    // TODO: I want to have a symbol like '---' to mean empty line when
+    // query gives 0 results.
 }
 
-// FIXME: TODO: we now return all records as text, but should we get double/int
-// instead when appropriate? In that case, we should create dedicated methods
-// for all tables, I guess.
+// FIXME: TODO: we now return all records as text, but should we get
+// double/int instead when appropriate? In that case, we should create
+// dedicated methods for all tables, I guess.
 // TODO: fill a cache and returns that if asked a second time
-std::vector<std::vector<std::string>> GMDBManager::getTableRecords(std::string tableName) const {
-    
+std::vector<std::vector<std::string>> GMDBManager::getTableRecords(
+    std::string tableName) const {
     // container to be returned
     std::vector<std::vector<std::string>> records;
     // get the query statetement ready to be executed
@@ -261,16 +262,17 @@ std::vector<std::vector<std::string>> GMDBManager::getTableRecords(std::string t
             res = sqlite3_step(stmt);  // Execute SQL Statement.
             if (res == SQLITE_ROW) {
                 std::vector<std::string>
-                    nodeParams;  // stores the data items contained in a single
-                                 // row
+                    nodeParams;  // stores the data items contained in a
+                                 // single row
                 for (int i = 0; i < ctotal;
                      i++)  // Loop times the number of columns in the table
                 {
                     std::string s;
                     const char* cc = (char*)sqlite3_column_text(
-                        stmt, i);  // Read each Column in the row as text FIXME:
-                                   // is there a method to get the right type,
-                                   // e.g. double, instead of text?
+                        stmt,
+                        i);  // Read each Column in the row as text FIXME:
+                             // is there a method to get the right type,
+                             // e.g. double, instead of text?
                     if (cc == NULL)
                         s = "NULL";
                     else
@@ -303,9 +305,12 @@ std::vector<std::vector<std::string>> GMDBManager::getTableFromNodeType(
         std::mutex coutMutex;
         coutMutex.lock();
         printf(
-            "\t ===> WARNING! The geometry input file does not contain a table "
-            "for the %s nodes. That means that you are probably using an old "
-            "geometry file. Unless you know exactly what you are doing, please "
+            "\t ===> WARNING! The geometry input file does not contain a "
+            "table "
+            "for the %s nodes. That means that you are probably using an "
+            "old "
+            "geometry file. Unless you know exactly what you are doing, "
+            "please "
             "expect to see incomplete geometries or crashes.\n",
             nodeType.c_str());
         coutMutex.unlock();
@@ -328,8 +333,8 @@ bool GMDBManager::addListOfChildrenPositions(
         // NOTE: Choose the right function for your version of SQLite!!
         return addListOfRecordsToTable("ChildrenPositions",
                                        records);  // needs SQLite >= 3.7.11
-        // return addListOfRecordsToTableOld("ChildrenPositions", records); //
-        // old SQLite versions
+        // return addListOfRecordsToTableOld("ChildrenPositions", records);
+        // // old SQLite versions
     }
     return false;
 }
@@ -346,16 +351,16 @@ bool GMDBManager::addListOfPublishedAlignableTransforms(
         tableName += "_";
         tableName += suffix;
         // debug msg
-        // std::cout << "\nSaving the published '"<< nodeType << "' nodes to the
-        // custom table: '"
+        // std::cout << "\nSaving the published '"<< nodeType << "' nodes to
+        // the custom table: '"
         //          << tableName << "'." << std::endl;
     }
     // create custom table first then add to it
     createTableCustomPublishedNodes(tableName, nodeType, &keyType);
     return addListOfRecordsToTable(tableName,
                                    records);  // needs SQLite >= 3.7.11
-    // return addListOfRecordsToTableOld( tableName, records ); // old SQLite
-    // versions
+    // return addListOfRecordsToTableOld( tableName, records ); // old
+    // SQLite versions
 }
 
 bool GMDBManager::addListOfPublishedFullPhysVols(
@@ -368,16 +373,16 @@ bool GMDBManager::addListOfPublishedFullPhysVols(
     if ("" != suffix) {
         tableName += "_";
         tableName += suffix;
-        // std::cout << "\nSaving the published '"<< nodeType << "' nodes to the
-        // custom table: '"
+        // std::cout << "\nSaving the published '"<< nodeType << "' nodes to
+        // the custom table: '"
         //           << tableName << "'." << std::endl;
     }
     // create custom table first then add to it
     createTableCustomPublishedNodes(tableName, nodeType, &keyType);
     return addListOfRecordsToTable(tableName,
                                    records);  // needs SQLite >= 3.7.11
-    // return addListOfRecordsToTableOld( tableName, records ); // old SQLite
-    // versions
+    // return addListOfRecordsToTableOld( tableName, records ); // old
+    // SQLite versions
 }
 
 /*
@@ -385,8 +390,8 @@ bool GMDBManager::addListOfRecordsToCustomTable(const
 std::vector<std::vector<std::string>> &records, std::string tableName )
 {
     std::string nodeType = "GeoFullPhysVol";
-    const std::type_info &keyType(typeid(std::string));//TODO: type should be
-custom too!!
+    const std::type_info &keyType(typeid(std::string));//TODO: type should
+be custom too!!
     // create custom table first
     createTableCustomPublishedNodes( tableName, nodeType, &keyType );
     // add records to the newly-created table
@@ -400,7 +405,8 @@ versions
 bool GMDBManager::addListOfRecords(
     const std::string geoType,
     const std::vector<std::vector<std::string>> records) {
-    //  if (m_debug) qDebug() << "GMDBManager::addListOfRecords():" << geoType;
+    //  if (m_debug) qDebug() << "GMDBManager::addListOfRecords():" <<
+    //  geoType;
 
     std::string tableName = m_childType_tableName[geoType];
 
@@ -415,8 +421,8 @@ bool GMDBManager::addListOfRecords(
         // NOTE: Choose the right function!!
         return addListOfRecordsToTable(
             tableName, records);  // better, but needs SQLite >= 3.7.11
-        // return addListOfRecordsToTableOld(tableName, records); // old SQLite
-        // versions
+        // return addListOfRecordsToTableOld(tableName, records); // old
+        // SQLite versions
     } else {
         if (m_debug)
             std::cout << "Info: no records to save for geoType '" << geoType
@@ -457,8 +463,8 @@ bool GMDBManager::addListOfRecordsToTable(
             items.push_back(
                 "'" + item +
                 "'");  // TODO: we should differentiate strings from other
-                       // values when inserting them in the table, as we now do
-                       // for the std::variant version!
+                       // values when inserting them in the table, as we now
+                       // do for the std::variant version!
         }
         std::string values = joinVectorStrings(items, ",");
         sql += " (" + std::to_string(id) + "," + values + ")";
@@ -520,9 +526,9 @@ bool GMDBManager::addListOfRecordsToTable(
             else if (std::holds_alternative<std::string>(item)) {
                 std::string str = std::get<std::string>(item);
                 // NOTE: if item is a "NULL" string, we don't encapsulate it
-                // into quotes, so it is taken as the SQL's NULL value in the
-                // SQL string, and inserted as a NULL value in the table,
-                // instead of as a "NULL" text string
+                // into quotes, so it is taken as the SQL's NULL value in
+                // the SQL string, and inserted as a NULL value in the
+                // table, instead of as a "NULL" text string
                 if (str == "NULL")
                     items.push_back(str);
                 else
@@ -549,10 +555,10 @@ bool GMDBManager::addListOfRecordsToTable(
     return true;
 }
 
-// TODO: this is for the old SQLite. Not needed anymore, I guess. ==> Just put a
-// requirement on the newer version of SQLite3 in CMakeLists.txt. Perhaps, also
-// check that GeoModelIO can run smoothly on older ATLAS releases, like 21.9 by
-// taking a newer SQLite3 from LCG.
+// TODO: this is for the old SQLite. Not needed anymore, I guess. ==> Just
+// put a requirement on the newer version of SQLite3 in CMakeLists.txt.
+// Perhaps, also check that GeoModelIO can run smoothly on older ATLAS
+// releases, like 21.9 by taking a newer SQLite3 from LCG.
 // ***Note***
 // old syntax, for SQLite in SLC6
 // here below we build the syntax for multiple INSERT
@@ -560,8 +566,9 @@ bool GMDBManager::addListOfRecordsToTable(
 // see: stackoverflow.com/questions/1609637
 //
 // we want to build a query like this:
-//  queryStr = QString("INSERT INTO Materials (id, name) SELECT 1 as id, 'Air'
-//  as name UNION ALL SELECT 2,'Silicon' UNION ALL SELECT 368,'ShieldSteel' ")
+//  queryStr = QString("INSERT INTO Materials (id, name) SELECT 1 as id,
+//  'Air' as name UNION ALL SELECT 2,'Silicon' UNION ALL SELECT
+//  368,'ShieldSteel' ")
 //
 /*
 bool GMDBManager::addListOfRecordsToTableOld(const QString tableName, const
@@ -576,18 +583,19 @@ tableColString = "(" + QString::fromStdString(tabColNames) + ")";
 
     QStringList colNames = m_tableNames.at(tableName);
     unsigned int nRecords = records.size();
-    qInfo() << "number of " << tableName << "records to insert into the DB:" <<
-nRecords;
+    qInfo() << "number of " << tableName << "records to insert into the DB:"
+<< nRecords;
 
 
-     // SQLite has a limit on 'union' items, set at 500. So we have to split the
-items if we have more.
+     // SQLite has a limit on 'union' items, set at 500. So we have to split
+the items if we have more.
      // See: stackoverflow.com/questions/9527851/
 
     unsigned int bunchSize = 500;
     if ( nRecords > bunchSize ) {
         qWarning() << "WARNING! " << nRecords << " records of type " <<
-tableName << "to store in the DB in one call! Call limit is " << bunchSize << "
+tableName << "to store in the DB in one call! Call limit is " << bunchSize
+<< "
 --> We split them in bunches...";
 
         std::vector<QStringList> recordsCopy( records ); // TODO: maybe we
@@ -606,22 +614,22 @@ should use a deque or queue, which have fast pop of first element?
             queryStr = queryStr.arg(tableColString); // insert table columns
 
         first = recordsCopy.begin();
-        last  = recordsCopy.size() > bunchSize ? recordsCopy.begin() + bunchSize
-: recordsCopy.end();
+        last  = recordsCopy.size() > bunchSize ? recordsCopy.begin() +
+bunchSize : recordsCopy.end();
 
         std::vector<QStringList> recordsBunch( first, last ); // we take the
-first 500 records recordsCopy.erase( first, last ); // we delete the first 500
-records if (m_debug) qDebug() << "start:" << start << "recordsBunch size:" <<
-recordsBunch.size() << "- recordsCopy size after removal:" <<
+first 500 records recordsCopy.erase( first, last ); // we delete the first
+500 records if (m_debug) qDebug() << "start:" << start << "recordsBunch
+size:" << recordsBunch.size() << "- recordsCopy size after removal:" <<
 recordsCopy.size();
 
             // --- first record
         // outcome should be like: " 1 as id, 'Air' as name "
         unsigned int id = start+1; // set the first ID as 'start'
-        QStringList recFirst = recordsBunch.front(); // access first record from
-vector recordsBunch.erase( recordsBunch.begin() ); // delete first record if
-(m_debug) qDebug() << "after taking first record - recordsBunch size:" <<
-recordsBunch.size();
+        QStringList recFirst = recordsBunch.front(); // access first record
+from vector recordsBunch.erase( recordsBunch.begin() ); // delete first
+record if (m_debug) qDebug() << "after taking first record - recordsBunch
+size:" << recordsBunch.size();
 
         // first item in the first record (it is the ID)
         QString firstCol = colNames[0];
@@ -647,9 +655,9 @@ recordsBunch.size();
 
                                                         // DEBUG
                                                         if (tableName ==
-"Functions") { if (recs[1].length() > 65000) { std::cout << "LONG STRING! size:
-" << recs[1].length() << std::endl; std::cout << "LONG STRING! string: " <<
-recs[1].toStdString() << std::endl << std::endl;
+"Functions") { if (recs[1].length() > 65000) { std::cout << "LONG STRING!
+size: " << recs[1].length() << std::endl; std::cout << "LONG STRING! string:
+" << recs[1].toStdString() << std::endl << std::endl;
                                                                 }
                                                         }
                                                         //------
@@ -662,8 +670,8 @@ recs[1].toStdString() << std::endl << std::endl;
                                         }
                 // join items into a string and add the SQL commands
                 QString itemsStr = items.join(", ");
-                queryStr += " UNION ALL SELECT " + QString::number(id) + ", " +
-itemsStr;
+                queryStr += " UNION ALL SELECT " + QString::number(id) + ",
+" + itemsStr;
             }
 
         //qDebug() << "queryStr:" << queryStr;
@@ -812,8 +820,8 @@ std::vector<std::string> GMDBManager::getItemAndType(unsigned int tableId,
 
 std::vector<std::string> GMDBManager::getItemFromTableName(
     std::string tableName, unsigned int id) {
-    // FIXME: when you create caches for all tables, replace this method with a
-    // lookup action in the cache.
+    // FIXME: when you create caches for all tables, replace this method
+    // with a lookup action in the cache.
     /*
      * Get the object from DB.
      */
@@ -844,9 +852,10 @@ std::vector<std::string> GMDBManager::getItemFromTableName(
                      i++)  // Loop times the number of columns in the table
                 {
                     std::string s = (char*)sqlite3_column_text(
-                        stmt, i);  // Read each Column in the row as text FIXME:
-                                   // is there a method to get the right type,
-                                   // e.g. double, instead of text?
+                        stmt,
+                        i);  // Read each Column in the row as text FIXME:
+                             // is there a method to get the right type,
+                             // e.g. double, instead of text?
                     item.push_back(s);
                 }
             }
@@ -953,8 +962,9 @@ int GMDBManager::loadGeoNodeTypesAndBuildCache() {
     return rc;
 }
 
-// FIXME: should throw an error if the method `loadGeoNodeTypesAndBuildCache()`
-// was not called before calling this method
+// FIXME: should throw an error if the method
+// `loadGeoNodeTypesAndBuildCache()` was not called before calling this
+// method
 std::string GMDBManager::getTableNameFromTableId(unsigned int tabId) {
     return m_cache_tableId_tableName[tabId];
 }
@@ -999,14 +1009,12 @@ sqlite3_stmt* GMDBManager::Imp::selectAllFromTableSortBy(
     return st;
 }
 
-bool GMDBManager::Imp::checkTable_imp(
-    std::string tableName) const {
+bool GMDBManager::Imp::checkTable_imp(std::string tableName) const {
     theManager->checkIsDBOpen();
     sqlite3_stmt* st = nullptr;  // SQLite statement to be returned
     int rc = -1;                 // SQLite return code
     // set the SQL query string
-    std::string sql =
-        fmt::format("SELECT * FROM {0}", tableName);
+    std::string sql = fmt::format("SELECT * FROM {0}", tableName);
     // prepare the query
     rc = sqlite3_prepare_v2(m_dbSqlite, sql.c_str(), -1, &st, NULL);
     if (rc != SQLITE_OK) return false;
@@ -1051,7 +1059,8 @@ void GMDBManager::getAllDBTables() {
     std::vector<std::string> tables;
     // define a query string containing the necessary SQL instructions
     std::string queryStr =
-        "SELECT name FROM sqlite_master WHERE type ='table' AND name NOT LIKE "
+        "SELECT name FROM sqlite_master WHERE type ='table' AND name NOT "
+        "LIKE "
         "'sqlite_%';";
     // prepare the query with the query string
     sqlite3_stmt* stmt;
@@ -1098,15 +1107,15 @@ void GMDBManager::getAllDBTableColumns() {
                                     &stmt, NULL);
         if (rc == SQLITE_OK) {
             // OK, now looping over table's columns...
-            // will continue to go down the rows (columns in your table) till
-            // there are no more
+            // will continue to go down the rows (columns in your table)
+            // till there are no more
             while (sqlite3_step(stmt) == SQLITE_ROW) {
                 // sprintf(colName, "%s", sqlite3_column_text(stmt, 1));
                 colName = std::string(reinterpret_cast<const char*>(
                     sqlite3_column_text(stmt, 0)));
 
-                // do something with colName because it contains the column's
-                // name
+                // do something with colName because it contains the
+                // column's name
                 m_tableNames[tableName].push_back(colName);
             }
         }
@@ -1115,7 +1124,8 @@ void GMDBManager::getAllDBTableColumns() {
 
 // TODO: currently, we retrieve published data as strings, but we want to
 // retrieve that according to the original data type
-std::vector<std::vector<std::string>> GMDBManager::getPublishedFPVTable( std::string suffix ) {
+std::vector<std::vector<std::string>> GMDBManager::getPublishedFPVTable(
+    std::string suffix) {
     std::string tableName = "PublishedFullPhysVols";  // default table name
     if ("" != suffix) {
         tableName += "_";
@@ -1126,7 +1136,8 @@ std::vector<std::vector<std::string>> GMDBManager::getPublishedFPVTable( std::st
 }
 // TODO: currently, we retrieve published data as strings, but we want to
 // retrieve that according to the original data type
-std::vector<std::vector<std::string>> GMDBManager::getPublishedAXFTable( std::string suffix ) {
+std::vector<std::vector<std::string>> GMDBManager::getPublishedAXFTable(
+    std::string suffix) {
     std::string tableName =
         "PublishedAlignableTransforms";  // default table name
     if ("" != suffix) {
@@ -1207,10 +1218,10 @@ std::vector<std::string> tableColTypes, const
 std::vector<std::vector<std::string>> &records )
 {
     if( tableColNames.size() == 0 ) throw
-std::runtime_error("GMDBManager::createCustomTable -- The list of columns' names
-is empty!!"); if( tableColTypes.size() == 0 ) throw
-std::runtime_error("GMDBManager::createCustomTable -- The list of columns' types
-is empty!!");
+std::runtime_error("GMDBManager::createCustomTable -- The list of columns'
+names is empty!!"); if( tableColTypes.size() == 0 ) throw
+std::runtime_error("GMDBManager::createCustomTable -- The list of columns'
+types is empty!!");
 
   int rc = -1; // sqlite's return code
   std::string queryStr;
@@ -1225,10 +1236,11 @@ is empty!!");
   storeTableColumnNames(tab);
 
   // prepare the dynamic query to create the custom table
-  queryStr = fmt::format( "create table {0} ( id integer primary key ", tab[0]
+  queryStr = fmt::format( "create table {0} ( id integer primary key ",
+tab[0]
 ); for( int ii=0; ii<tableColNames.size(); ++ii) { std::string colStr =
-fmt::format( ", {0} {1} ", tableColNames[ii], tableColTypes[ii] ); queryStr +=
-colStr;
+fmt::format( ", {0} {1} ", tableColNames[ii], tableColTypes[ii] ); queryStr
++= colStr;
   }
   queryStr += ")";
 
@@ -1249,11 +1261,13 @@ bool GMDBManager::createCustomTable(
         records) {
     if (tableColNames.size() == 0)
         throw std::runtime_error(
-            "GMDBManager::createCustomTable -- The list of columns' names is "
+            "GMDBManager::createCustomTable -- The list of columns' names "
+            "is "
             "empty!!");
     if (tableColTypes.size() == 0)
         throw std::runtime_error(
-            "GMDBManager::createCustomTable -- The list of columns' types is "
+            "GMDBManager::createCustomTable -- The list of columns' types "
+            "is "
             "empty!!");
 
     std::string queryStr;
@@ -1272,22 +1286,23 @@ bool GMDBManager::createCustomTable(
     for (size_t ii = 0; ii < tableColNames.size(); ++ii) {
         std::string colType = "";
 
-        // -- Here we check the datum's type, which is more universal than using
-        // string-encoded types
+        // -- Here we check the datum's type, which is more universal than
+        // using string-encoded types
         // -- but this does not work if the first entry of a given column is
         // empty.
-        // -- If so, the 'null' entry is taken as string, and the column is set
-        // as containing TEXT... convert std::variant types to SQLite data types
-        // (see SQLite documentation)
+        // -- If so, the 'null' entry is taken as string, and the column is
+        // set as containing TEXT... convert std::variant types to SQLite
+        // data types (see SQLite documentation)
         /*
-        if(      std::holds_alternative<int>(records[0][ii]) )         colType =
+        if(      std::holds_alternative<int>(records[0][ii]) ) colType =
         "INTEGER"; else if( std::holds_alternative<long>(records[0][ii]) )
         colType = "INTEGER"; else if(
-        std::holds_alternative<float>(records[0][ii]) )       colType = "REAL";
-        else if( std::holds_alternative<double>(records[0][ii]) )      colType =
-        "REAL"; else if( std::holds_alternative<std::string>(records[0][ii]) )
-        colType = "TEXT"; else throw std::runtime_error("No std::variant
-        alternative has been found!\n");
+        std::holds_alternative<float>(records[0][ii]) )       colType =
+        "REAL"; else if( std::holds_alternative<double>(records[0][ii]) )
+        colType = "REAL"; else if(
+        std::holds_alternative<std::string>(records[0][ii]) ) colType =
+        "TEXT"; else throw std::runtime_error("No std::variant alternative
+        has been found!\n");
         */
 
         if (tableColTypes[ii] == "INT")
@@ -1329,8 +1344,8 @@ bool GMDBManager::createTables() {
     std::string tableName;
     std::vector<std::string> tab;
 
-    // create a table to store the relation between the types of GeoNodes and
-    // the name of the table
+    // create a table to store the relation between the types of GeoNodes
+    // and the name of the table
     tableName = "dbversion";
     tab.insert(tab.begin(), {tableName, "id", "version"});
     storeTableColumnNames(tab);
@@ -1340,19 +1355,21 @@ bool GMDBManager::createTables() {
     rc = execQuery(queryStr);
     tab.clear();
 
-    // create a table to store the relation between the types of GeoNodes and
-    // the name of the table
+    // create a table to store the relation between the types of GeoNodes
+    // and the name of the table
     tableName = "GeoNodesTypes";
     tab.insert(tab.begin(), {tableName, "id", "nodeType", "tableName"});
     storeTableColumnNames(tab);
     queryStr = fmt::format(
-        "create table {0}({1} integer primary key, {2} varchar, {3} varchar)",
+        "create table {0}({1} integer primary key, {2} varchar, {3} "
+        "varchar)",
         tab[0], tab[1], tab[2], tab[3]);
     rc = execQuery(queryStr);
     tab.clear();
 
-    // create a table to store the mother-daughter relationships between nodes
-    // (notably, between the [Full]PhysVols as the parents and their children)
+    // create a table to store the mother-daughter relationships between
+    // nodes (notably, between the [Full]PhysVols as the parents and their
+    // children)
     tableName = "ChildrenPositions";
     tab.push_back(tableName);
     tab.push_back("id");
@@ -1365,16 +1382,19 @@ bool GMDBManager::createTables() {
     tab.push_back("childCopyNumber");
     storeTableColumnNames(tab);
     queryStr = fmt::format(
-        "create table {0}({1} integer primary key, {2} integer, {3} integer "
-        "not null REFERENCES GeoNodesTypes(id), {4} integer, {5} integer, {6} "
-        "integer not null REFERENCES GeoNodesTypes(id), {7} integer not null, "
+        "create table {0}({1} integer primary key, {2} integer, {3} "
+        "integer "
+        "not null REFERENCES GeoNodesTypes(id), {4} integer, {5} integer, "
+        "{6} "
+        "integer not null REFERENCES GeoNodesTypes(id), {7} integer not "
+        "null, "
         "{8} integer not null)",
         tab[0], tab[1], tab[2], tab[3], tab[4], tab[5], tab[6], tab[7], tab[8]);
     rc = execQuery(queryStr);
     tab.clear();
 
-    // create a table to store information about the 'root' volume (also known
-    // as the 'world' volume)
+    // create a table to store information about the 'root' volume (also
+    // known as the 'world' volume)
     tableName = "RootVolume";
     tab.push_back(tableName);
     tab.push_back("id");
@@ -1382,7 +1402,8 @@ bool GMDBManager::createTables() {
     tab.push_back("volTable");
     storeTableColumnNames(tab);
     queryStr = fmt::format(
-        "create table {0}({1} integer primary key, {2} integer not null, {3} "
+        "create table {0}({1} integer primary key, {2} integer not null, "
+        "{3} "
         "integer not null REFERENCES GeoNodesTypes(id))",
         tab[0], tab[1], tab[2], tab[3]);
     rc = execQuery(queryStr);
@@ -1431,7 +1452,8 @@ bool GMDBManager::createTables() {
     tab.push_back("material");
     storeTableColumnNames(tab);
     queryStr = fmt::format(
-        "create table {0}({1} integer primary key, {2} varchar, {3} integer "
+        "create table {0}({1} integer primary key, {2} varchar, {3} "
+        "integer "
         "not null, {4} integer not null)",
         tab[0], tab[1], tab[2], tab[3], tab[4]);
     if (0 == (rc = execQuery(queryStr))) {
@@ -1450,7 +1472,8 @@ bool GMDBManager::createTables() {
     tab.push_back("elements");
     storeTableColumnNames(tab);
     queryStr = fmt::format(
-        "create table {0}({1} integer primary key, {2} varchar, {3} varchar, "
+        "create table {0}({1} integer primary key, {2} varchar, {3} "
+        "varchar, "
         "{4} varchar)",
         tab[0], tab[1], tab[2], tab[3], tab[4]);
     if (0 == (rc = execQuery(queryStr))) {
@@ -1470,7 +1493,8 @@ bool GMDBManager::createTables() {
     tab.push_back("A");
     storeTableColumnNames(tab);
     queryStr = fmt::format(
-        "create table {0}({1} integer primary key, {2} varchar, {3} varchar, "
+        "create table {0}({1} integer primary key, {2} varchar, {3} "
+        "varchar, "
         "{4} varchar, {5} varchar)",
         tab[0], tab[1], tab[2], tab[3], tab[4], tab[5]);
     if (0 == (rc = execQuery(queryStr))) {
@@ -1488,7 +1512,8 @@ bool GMDBManager::createTables() {
     tab.push_back("parameters");
     storeTableColumnNames(tab);
     queryStr = fmt::format(
-        "create table {0}({1} integer primary key, {2} varchar, {3} varchar)",
+        "create table {0}({1} integer primary key, {2} varchar, {3} "
+        "varchar)",
         tab[0], tab[1], tab[2], tab[3]);
     if (0 == (rc = execQuery(queryStr))) {
         storeNodeType(geoNode, tableName);
@@ -1572,7 +1597,8 @@ bool GMDBManager::createTables() {
     storeTableColumnNames(tab);
     queryStr = fmt::format(
         "create table {0}({1} integer primary key, {2} integer not null "
-        "REFERENCES Functions(id), {3} integer not null, {4} integer not null "
+        "REFERENCES Functions(id), {3} integer not null, {4} integer not "
+        "null "
         "REFERENCES GeoNodesTypes(id), {5} integer)",
         tab[0], tab[1], tab[2], tab[3], tab[4], tab[5]);
     if (0 == (rc = execQuery(queryStr))) {
@@ -1601,7 +1627,8 @@ bool GMDBManager::createTables() {
     storeTableColumnNames(tab);
     queryStr = fmt::format(
         "create table {0}({1} integer primary key, {2} real, {3} real, {4} "
-        "real, {5} real, {6} real, {7} real, {8} real, {9} real, {10} real, "
+        "real, {5} real, {6} real, {7} real, {8} real, {9} real, {10} "
+        "real, "
         "{11} real, {12} real, {13} real)",
         tab[0], tab[1], tab[2], tab[3], tab[4], tab[5], tab[6], tab[7], tab[8],
         tab[9], tab[10], tab[11], tab[12], tab[13]);
@@ -1631,7 +1658,8 @@ bool GMDBManager::createTables() {
     storeTableColumnNames(tab);
     queryStr = fmt::format(
         "create table {0}({1} integer primary key, {2} real, {3} real, {4} "
-        "real, {5} real, {6} real, {7} real, {8} real, {9} real, {10} real, "
+        "real, {5} real, {6} real, {7} real, {8} real, {9} real, {10} "
+        "real, "
         "{11} real, {12} real, {13} real)",
         tab[0], tab[1], tab[2], tab[3], tab[4], tab[5], tab[6], tab[7], tab[8],
         tab[9], tab[10], tab[11], tab[12], tab[13]);
@@ -1740,7 +1768,8 @@ void GMDBManager::storeNodeType(std::string nodeType, std::string tableName) {
 //  QSqlQuery q;
 //  //
 //  //  qDebug() << "Loading Shapes...";
-//  //  if (!q.prepare(QLatin1String("insert into Shapes(name) values(?)"))) {
+//  //  if (!q.prepare(QLatin1String("insert into Shapes(name) values(?)")))
+//  {
 //  //    showError(q.lastError());
 //  //    return;
 //  //  }
@@ -1757,8 +1786,9 @@ void GMDBManager::storeNodeType(std::string nodeType, std::string tableName) {
 //  QVariant leadId =
 //  addMaterial(QLatin1String("Lead"),QLatin1String("density"),QLatin1String("elements"));
 //
-//  QVariant worldLogId = addLogVol(QLatin1String("WorldLog"), boxId, airId);
-//  QVariant toyLogId  = addLogVol(QLatin1String("ToyLog"), coneId, leadId);
+//  QVariant worldLogId = addLogVol(QLatin1String("WorldLog"), boxId,
+//  airId); QVariant toyLogId  = addLogVol(QLatin1String("ToyLog"), coneId,
+//  leadId);
 //
 //  QVariant rootPhysId = addPhysVol(worldLogId, QVariant()); // no parent
 //  QVariant childPhysId = addPhysVol(toyLogId, rootPhysId);

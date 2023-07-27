@@ -1,5 +1,5 @@
 /*
-  Copyright (C) 2002-2017 CERN for the benefit of the ATLAS collaboration
+  Copyright (C) 2002-2023 CERN for the benefit of the ATLAS collaboration
 */
 
 #ifndef GEOMODELKERNEL_GEOTESSELLATEDSOLID_H
@@ -27,8 +27,9 @@ class GeoTessellatedSolid : public GeoShape
   GeoFacet* getFacet(size_t) const;
   size_t getNumberOfFacets() const;
 
-  //!	True if the polygon has at least two facets. False otherwise.
-  //  bool isValid () const; // TODO: implement, like, e.g., in GeoPgon
+  // True if the tessellated solid has at least four facets (tetrahedron).
+  // False otherwise.
+  bool isValid () const;
 
  protected:
   virtual ~GeoTessellatedSolid();
@@ -53,10 +54,9 @@ inline ShapeType GeoTessellatedSolid::getClassTypeID()
   return s_classTypeID;
 }
 
-// TODO: implement, like, e.g., in GeoPgon
-//inline bool GeoPgon::isValid () const
-//{
-//  return m_zPlane.size () >= 2;
-//}
+inline bool GeoTessellatedSolid::isValid () const
+{
+  return m_facets.size () >= 4;
+}
 
 #endif

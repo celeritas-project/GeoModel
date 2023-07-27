@@ -1797,7 +1797,7 @@ GeoPolyhedron BooleanProcessor::createPolyhedron()
 	<< std::endl;
     }
     polyhedron.m_pF[faces[i].inew] =
-      GeoFacet(v[0],f[0], v[1],f[1], v[2],f[2], v[3],f[3]);
+      GeoPolyhedron::GeoFacet(v[0],f[0], v[1],f[1], v[2],f[2], v[3],f[3]);
   }
   return polyhedron;
 }

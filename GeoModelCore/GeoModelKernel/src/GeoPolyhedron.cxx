@@ -85,7 +85,7 @@ ffabs (float a)
  * Function: Print contents of G4 polyhedron                           *
  *                                                                     *
  ***********************************************************************/
-std::ostream & operator<< (std::ostream & ostr, const GeoFacet & facet)
+std::ostream & operator<< (std::ostream & ostr, const GeoPolyhedron::GeoFacet & facet)
 {
   for (int k = 0; k < 4; k++)
     {

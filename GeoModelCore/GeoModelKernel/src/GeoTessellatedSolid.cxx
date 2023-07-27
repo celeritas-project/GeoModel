@@ -20,8 +20,21 @@ GeoTessellatedSolid::~GeoTessellatedSolid()
 
 double GeoTessellatedSolid::volume() const
 {
-  // -- ToDo
-  return 0.;
+  if (!isValid ())
+    throw std::runtime_error ("Volume requested for incomplete tessellated solid");
+  double v = 0.;
+  for (size_t i = 0; i < m_facets.size(); ++i)
+  {
+    GeoFacet* facet = getFacet(i);
+    GeoTrf::Vector3D e1 = facet->getVertex(2) - facet->getVertex(0);
+    GeoTrf::Vector3D e2 = (facet->getNumberOfVertices() == 4) ?
+      facet->getVertex(3) - facet->getVertex(1) :
+      facet->getVertex(2) - facet->getVertex(1);
+    v += facet->getVertex(0).dot(e1.cross(e2));
+  }
+  if (v < 0.)
+    throw std::runtime_error ("Incorrect order of vertices in tessellated solid");
+  return v*(1./6.);
 }
 
 const std::string& GeoTessellatedSolid::type() const

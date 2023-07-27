@@ -25,33 +25,21 @@ double GeoPgon::volume () const
 {
   if (!isValid ())
     throw std::runtime_error ("Volume requested for incomplete polygon");
-  double v = 0;
-  int sides = getNSides ();
-  double alpha = m_dPhi/sides;
+  double v = 0.0;
+  for (size_t k = 0; k < getNPlanes() - 1; ++k) {
+    double z1 = getZPlane(k);
+    double z2 = getZPlane(k + 1);
+    double a1 = getRMinPlane(k);
+    double a2 = getRMinPlane(k + 1);
+    double b1 = getRMaxPlane(k);
+    double b2 = getRMaxPlane(k + 1);
+    v += (b1*b1 + b1*b2 + b2*b2 - a1*a1 - a1*a2 - a2*a2) * (z2 - z1);
+  }
+  int nsides = getNSides();
+  double alpha = m_dPhi/nsides;
   double sinAlpha = sin(alpha);
-  
-  for (size_t s = 0; s < getNPlanes () - 1; s++) {
-    double z2 = getZPlane (s);;
-    double z1 = getZPlane (s + 1);;
-    double fRmin1 = getRMinPlane (s + 1);
-    double fRmin2 = getRMinPlane (s);
-    double fRmax1 = getRMaxPlane (s + 1);
-    double fRmax2 = getRMaxPlane (s);
-
-    double b1 = (fRmax1 - fRmax2)/(z1 - z2);
-    double b2 = (fRmin1 - fRmin2)/(z1 - z2);
-
-    double a1 = fRmax2  - b1 * z2;
-    double a2 = fRmin2  - b2 * z2;
-
-    //v+=fabs((a1*a1-a2*a2)*(z1-z2) + (a1*b1-a2*b2)*(z1*z1-z2*z2) + (b1*b1-b2*b2)*(z1*z1*z1-z2*z2*z2)/3.);
-    // Equivalent which should be less sensitive to numerical precision errors:
-    v += fabs(z1 - z2) * ((a1 - a2) * (a1 + a2)  + 
-			  (a1*b1 - a2*b2) * (z1 + z2) +
-			  (b1 - b2) * (b1 + b2) * (z1*z1+z2*z2+z1*z2)*(1./3));  
-  } 
-  v *=  0.5 * sides * sinAlpha;
-  return v;
+  double cosHalfAlpha = cos(0.5 * alpha);
+  return fabs(v) * nsides * sinAlpha / (cosHalfAlpha * cosHalfAlpha * 6.0);
 }
 
 const std::string & GeoPgon::type () const

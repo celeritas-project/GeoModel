@@ -26,8 +26,8 @@ double GeoTrd::volume () const
   double fDx1 = m_xHalfLength1;
   double fDx2 = m_xHalfLength2;
   double fDy2 = m_yHalfLength2;
-  return 4.0 * ((fDx1 + fDx2) * (fDy1 + fDy2) * (fDz * 0.5) +
-		(fDx2 - fDx1) * (fDy2 - fDy1) * (fDz * (1./6)));
+  return 2.0 * fDz *
+    ((fDx1 + fDx2) * (fDy1 + fDy2) + (fDx2 - fDx1) * (fDy2 - fDy1) * (1./3.));
 }
 
 const std::string & GeoTrd::type () const

@@ -20,8 +20,19 @@ GeoGenericTrap::~GeoGenericTrap()
 
 double GeoGenericTrap::volume() const
 {
-  // -- ToDo
-  return 0.;
+  // diagonals
+  GeoTwoVector A = m_vertices[3] - m_vertices[1];
+  GeoTwoVector B = m_vertices[2] - m_vertices[0];
+  GeoTwoVector C = m_vertices[7] - m_vertices[5];
+  GeoTwoVector D = m_vertices[6] - m_vertices[4];
+
+  // kross products
+  double AB = A.x()*B.y() - A.y()*B.x();
+  double CD = C.x()*D.y() - C.y()*D.x();
+  double AD = A.x()*D.y() - A.y()*D.x();
+  double CB = C.x()*B.y() - C.y()*B.x();
+
+  return m_zHalfLength * ((AB + CD)* (1./3.) + (AD + CB)* (1./6.));
 }
 
 const std::string& GeoGenericTrap::type() const

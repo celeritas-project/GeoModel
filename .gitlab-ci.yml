@@ -253,6 +253,26 @@ mac-gm-fullsimlight:
     CMAKE_ARGS: ${CMAKE_BASE_ARGS}
     CMAKE_CONFIG_FLAGS: -DGEOMODEL_BUILD_FULLSIMLIGHT=TRUE
 
+
+mac-gm-fsl:
+  <<: *macos-job
+  <<: *geomodel-job
+  stage: step-A
+  variables:
+    CMAKE_ARGS: ${CMAKE_BASE_ARGS}
+    CMAKE_EXTRA_FLAGS: -DGEOMODEL_BUILD_FSL=TRUE
+
+
+mac-gm-all:
+  <<: *macos-job
+  <<: *geomodel-job
+  stage: step-C
+  needs: ["mac-coin", "mac-soqt"]
+  variables:
+    CMAKE_ARGS: ${CMAKE_BASE_ARGS}
+    CMAKE_EXTRA_FLAGS: -DGEOMODEL_BUILD_ALL=TRUE
+
+
 mac-gm-atlasextras:
   <<: *macos-job
   <<: *geomodel-job
@@ -346,6 +366,27 @@ ubu-gm-fullsimlight:
   variables:
     CMAKE_ARGS: ${CMAKE_BASE_ARGS}
     CMAKE_CONFIG_FLAGS: -DGEOMODEL_BUILD_FULLSIMLIGHT=TRUE
+
+
+ubu-gm-fsl:
+  <<: *ubuntu-job
+  <<: *geomodel-job
+  stage: step-B
+  needs: ["ubu-geant4"]
+  variables:
+    CMAKE_ARGS: ${CMAKE_BASE_ARGS}
+    CMAKE_CONFIG_FLAGS: -DGEOMODEL_BUILD_FSL=TRUE
+
+
+ubu-gm-all:
+  <<: *ubuntu-job
+  <<: *geomodel-job
+  stage: step-C
+  needs: ["ubu-coin", "ubu-soqt", "ubu-geant4"]
+  variables:
+    CMAKE_ARGS: ${CMAKE_BASE_ARGS}
+    CMAKE_CONFIG_FLAGS: -DGEOMODEL_BUILD_ALL=TRUE
+
 
 ubu-gm-atlasextras:
   <<: *ubuntu-job

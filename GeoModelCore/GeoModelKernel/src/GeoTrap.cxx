@@ -29,20 +29,15 @@ GeoTrap::~GeoTrap()
 
 double GeoTrap::volume () const
 {
-  double fDz = m_zHalfLength;
-  double fDy1 = m_dydzn;		              
-  double pDx1 = m_dxdyndzn;	              
-  double pDx2 = m_dxdypdzn;	              
-  double fDy2 = m_dydzp;		              
-  double pDx3 = m_dxdyndzp;	              
-  double pDx4 = m_dxdypdzp;	                  
-
-
-  double fDx1 = 0.5 * (pDx1 + pDx2);
-  double fDx2 = 0.5 * (pDx3 + pDx4);
-
-  return 4.0 * ((fDx1 + fDx2) * (fDy1 + fDy2) * (fDz * 0.5) +
-		(fDx2 - fDx1) * (fDy2 - fDy1) * (fDz * (1./6)));
+  double fDz  = m_zHalfLength;
+  double fDy1 = m_dydzn;
+  double fDx1 = m_dxdyndzn;
+  double fDx2 = m_dxdypdzn;
+  double fDy2 = m_dydzp;
+  double fDx3 = m_dxdyndzp;
+  double fDx4 = m_dxdypdzp;
+  return fDz * ((fDx1 + fDx2 + fDx3 + fDx4) * (fDy1 + fDy2) +
+                (fDx4 + fDx3 - fDx2 - fDx1) * (fDy2 - fDy1) * (1./3.));
 }
 
 const std::string & GeoTrap::type () const
