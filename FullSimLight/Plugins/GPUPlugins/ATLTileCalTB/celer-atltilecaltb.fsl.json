@@ -22,6 +22,7 @@
         "/process/had/verbose 0",
         "/control/cout/prefixString G4Worker_",
         "/FSLdet/setField 0.0 tesla",
+        "/run/initialize",
         "/gun/particle pi+",
         "/gun/energy 18 GeV"
     ]
