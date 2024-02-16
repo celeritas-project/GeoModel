@@ -22,6 +22,8 @@ SetupOptions& CelerSetupOptions()
     // Set along-step factory
     so.make_along_step = celeritas::UniformAlongStepFactory();
 
+    so.sync = false;
+
     so.max_num_tracks = 65536;
     so.max_num_events = 10000;
     so.initializer_capacity = so.max_num_tracks * 128;
@@ -47,6 +49,9 @@ SetupOptions& CelerSetupOptions()
 
     // Save diagnostic information
     so.output_file = "celeritas-tilecal.json";
+
+    // Sort tracks
+    so.track_order = TrackOrder::unsorted;
 
     // Pre-step time is used
     so.sd.pre.global_time = true;

@@ -46,9 +46,7 @@ class ATLTileCalTBUserActionPlugin final : public FSLUserActionPlugin
 
     G4UserSteppingAction* getSteppingAction() const override
     {
-        // Stepping action needs this thread's Event Action
-        // Not thread_local because not other action needs worker Stepping Action.
-        return new ATLTileCalTBStepAction{dynamic_cast<ATLTileCalTBEventAction*>(this->getEventAction())};
+        return nullptr;
     }
 
     G4UserTrackingAction* getTrackingAction() const override
