@@ -18,5 +18,6 @@ target_link_libraries(MinCeleritasUserActionPlugin Celeritas::accel $<TARGET_NAM
 
 # Configure the FSL Json file
 configure_file(celer-testem3.fsl.json celer-testem3.fsl.json @ONLY)
+configure_file(celer-emec.fsl.json celer-emec.fsl.json @ONLY)
 
 # TODO: Add installation commands

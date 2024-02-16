@@ -1,0 +1,33 @@
+{
+    "Generator": "Particle Gun",
+    "Generator Plugin": "",
+    "Geometry": "@PROJECT_SOURCE_DIR@/MinCeleritas/EMEC_GenericTrap.gdml",
+    "HepMC3 file": "",
+    "HepMC3 type of file": "",
+    "Magnetic Field Plugin": "",
+    "Magnetic Field Type": "Fixed Axial",
+    "Number of events": 32,
+    "Physics list name": "FTFP_BERT",
+    "Pythia event input file": "",
+    "Pythia type of event": "",
+    "Regions data": [],
+    "Sensitive Detector Extensions": [],
+    "User Action Extensions": [
+        "@PROJECT_BINARY_DIR@/MinCeleritas/libMinCeleritasUserActionPlugin.so"
+    ],
+    "g4ui_commands": [
+        "/process/em/verbose 0",
+        "/process/had/verbose 0",
+        "/control/cout/prefixString G4Worker_",
+        "/run/numberOfThreads 32",
+        "/celer/outputFile celer-emec.diag.json",
+        "/FSLdet/setField 0.0 tesla",
+        "/FSLgun/primaryPerEvt 100",
+        "/FSLgun/energy 180.000000 GeV",
+        "/FSLgun/particle pi+",
+        "/FSLgun/direction 0.110000 0.330000 0.930000"
+    ],
+    "p_x": 0.0,
+    "p_y": 0.0,
+    "p_z": 0.0
+}
