@@ -28,7 +28,7 @@ SetupOptions& CelerSetupOptions()
 
         so.max_num_tracks = 65536;
         so.max_num_events = 10000;
-        so.initializer_capacity = 1024 * 128;
+        so.initializer_capacity = so.max_num_tracks * 128;
         so.secondary_stack_factor = 3.0;
         so.ignore_processes = {"CoulombScat"};
 
