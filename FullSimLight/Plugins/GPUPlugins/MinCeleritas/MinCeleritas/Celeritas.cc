@@ -24,7 +24,9 @@ SetupOptions& CelerSetupOptions()
         // Set along-step factory
         so.make_along_step = celeritas::UniformAlongStepFactory();
 
-        so.max_num_tracks = 1024;
+        so.sync = false;
+
+        so.max_num_tracks = 65536;
         so.max_num_events = 10000;
         so.initializer_capacity = 1024 * 128;
         so.secondary_stack_factor = 3.0;
@@ -45,6 +47,13 @@ SetupOptions& CelerSetupOptions()
 
         // Pre-step time is used
         so.sd.pre.global_time = true;
+
+        // Save diagnostic information
+        so.output_file = "minceleritas.json";
+
+        // Sort tracks
+        so.track_order = TrackOrder::unsorted;
+
         return so;
     }();
 
