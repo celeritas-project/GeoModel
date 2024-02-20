@@ -1,6 +1,6 @@
 {
-    "Generator": "Particle Gun",
-    "Generator Plugin": "",
+    "Generator": "Generator Plugin",
+    "Generator Plugin": "@PROJECT_BINARY_DIR@/MinCeleritas/libMinCeleritasUserActionPlugin.so",
     "Geometry": "@PROJECT_SOURCE_DIR@/MinCeleritas/EMEC_GenericTrap.gdml",
     "HepMC3 file": "",
     "HepMC3 type of file": "",
@@ -22,10 +22,10 @@
         "/run/numberOfThreads 32",
         "/celer/outputFile celer-emec.diag.json",
         "/FSLdet/setField 0.0 tesla",
-        "/FSLgun/primaryPerEvt 100",
-        "/FSLgun/energy 180.000000 GeV",
-        "/FSLgun/particle pi+",
-        "/FSLgun/direction 0.110000 0.330000 0.930000"
+        "/run/initialize",
+        "/gun/particle pi+",
+        "/gun/energy 18 GeV",
+        "/gun/number 64"
     ],
     "p_x": 0.0,
     "p_y": 0.0,

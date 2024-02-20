@@ -10,6 +10,7 @@
 #include "MinCeleritas/RunAction.hh"
 #include "MinCeleritas/TrackingAction.hh"
 #include "MinCeleritas/Celeritas.hh"
+#include "MinCeleritas/MinCelPrimaryGenAction.hh"
 
 namespace MinCeleritas {
 //---------------------------------------------------------------------------//
@@ -34,6 +35,12 @@ class UserActionPlugin final : public FSLUserActionPlugin
     G4UserTrackingAction* getTrackingAction() const override
     {
         return new TrackingAction;
+    }
+
+    G4VUserPrimaryGeneratorAction* getPrimaryGeneratorAction() const override
+    {
+        static thread_local auto* primGenAct = new MinCelPrimaryGenAction;
+        return primGenAct;
     }
 };
 
