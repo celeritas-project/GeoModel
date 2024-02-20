@@ -1,5 +1,7 @@
 #pragma once
 
+#include <functional>
+#include <memory>
 #include <random>
 // Includers from Geant4
 //
@@ -17,11 +19,11 @@ class MinCelPrimaryGenAction : public G4VUserPrimaryGeneratorAction
 {
   public:
     MinCelPrimaryGenAction();
-    virtual ~MinCelPrimaryGenAction();
 
     virtual void GeneratePrimaries(G4Event* event);
   private:
-    G4ParticleGun* fParticleGun;
+    std::unique_ptr<G4ParticleGun> fParticleGun;
     std::mt19937 fRNG;
+    std::function<G4double()> fGen;
 };
 } // namespace MinCeleritas
