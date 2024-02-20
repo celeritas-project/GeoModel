@@ -1,7 +1,6 @@
 #include "MinCelPrimaryGenAction.hh"
 
 #include <cmath>
-#include <random>
 
 #include "G4Event.hh"
 #include "G4ParticleDefinition.hh"
@@ -13,7 +12,7 @@
 
 namespace MinCeleritas {
 MinCelPrimaryGenAction::MinCelPrimaryGenAction()
-  : G4VUserPrimaryGeneratorAction(), fParticleGun{new G4ParticleGun(1)}
+  : G4VUserPrimaryGeneratorAction(), fParticleGun{new G4ParticleGun(1)}, fRNG{}
 {
 
     // default particle gun parameters (can be changed via UI)
@@ -22,14 +21,6 @@ MinCelPrimaryGenAction::MinCelPrimaryGenAction()
     fParticleGun->SetParticleDefinition(particleDefinition);
     fParticleGun->SetParticleEnergy(10. * GeV);
     fParticleGun->SetParticlePosition(G4ThreeVector(0., 0., 0.));
-    constexpr G4double maxCosTheta = 0.997;
-    constexpr G4double minCosTheta = 0.9;
-    std::mt19937 gen{1};
-    std::uniform_real_distribution<G4double> dist;
-    G4double z = (maxCosTheta - minCosTheta) * dist(gen) + minCosTheta;
-    G4double rho = std::sqrt((1. + z) * (1. - z));
-    G4double phi = 2 * M_PI * dist(gen);
-    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(rho * std::cos(phi), rho * std::sin(phi), z));
 }
 
 MinCelPrimaryGenAction::~MinCelPrimaryGenAction()
@@ -39,6 +30,14 @@ MinCelPrimaryGenAction::~MinCelPrimaryGenAction()
 
 void MinCelPrimaryGenAction::GeneratePrimaries(G4Event* event)
 {
+    constexpr G4double maxCosTheta = 0.997;
+    constexpr G4double minCosTheta = 0.9;
+    fRNG.seed(event->GetEventID());
+    auto* gen = std::generate_canonical<G4double, std::numeric_limits<G4double>::digits, decltype(fRNG)>;
+    G4double z = (maxCosTheta - minCosTheta) * gen(fRNG) + minCosTheta;
+    G4double rho = std::sqrt((1. + z) * (1. - z));
+    G4double phi = 2 * M_PI * gen(fRNG);
+    fParticleGun->SetParticleMomentumDirection(G4ThreeVector(rho * std::cos(phi), rho * std::sin(phi), z));
     fParticleGun->GeneratePrimaryVertex(event);
 }
 }  // namespace MinCeleritas

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <random>
 // Includers from Geant4
 //
 #  include "G4Types.hh"
@@ -21,5 +22,6 @@ class MinCelPrimaryGenAction : public G4VUserPrimaryGeneratorAction
     virtual void GeneratePrimaries(G4Event* event);
   private:
     G4ParticleGun* fParticleGun;
+    std::mt19937 fRNG;
 };
 } // namespace MinCeleritas
