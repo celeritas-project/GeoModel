@@ -12,7 +12,10 @@
 
 namespace MinCeleritas {
 MinCelPrimaryGenAction::MinCelPrimaryGenAction()
-  : G4VUserPrimaryGeneratorAction(), fParticleGun{std::make_unique<G4ParticleGun>(1)}, fRNG{}, fGen{std::bind(std::generate_canonical<G4double, std::numeric_limits<G4double>::digits, decltype(fRNG)>, fRNG)}
+  : G4VUserPrimaryGeneratorAction(),
+    fParticleGun{std::make_unique<G4ParticleGun>(1)},
+    fRNG{},
+    fGen{std::bind(std::generate_canonical<G4double, std::numeric_limits<G4double>::digits, decltype(fRNG)>, std::ref(fRNG))}
 {
 
     // default particle gun parameters (can be changed via UI)
