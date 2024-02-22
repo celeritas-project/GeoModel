@@ -9,6 +9,7 @@ add_library(MinCeleritasUserActionPlugin MODULE
   MinCeleritas/EventAction.hh
   MinCeleritas/RunAction.hh
   MinCeleritas/TrackingAction.hh
+  MinCeleritas/MinCelPrimaryGenAction.cc
   UserActionPlugin.cc)
 
 # Link explicitly to Celeritas's accel and accel_final targets if the latter exists. We don't use celeritas_target_link_libraries
