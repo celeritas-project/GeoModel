@@ -61,7 +61,7 @@ SetupOptions& CelerSetupOptions()
     so.output_file = "celeritas-tilecal.json";
 
     // Sort tracks
-    so.track_order = TrackOrder::unsorted;
+    so.track_order = TrackOrder::none;
 
     // Pre-step time is used
     so.sd.pre.global_time = true;

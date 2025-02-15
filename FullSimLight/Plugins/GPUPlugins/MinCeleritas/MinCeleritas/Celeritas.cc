@@ -61,7 +61,7 @@ SetupOptions& CelerSetupOptions()
         so.output_file = "minceleritas.json";
 
         // Sort tracks
-        so.track_order = TrackOrder::unsorted;
+        so.track_order = TrackOrder::none;
 
         return so;
     }();
